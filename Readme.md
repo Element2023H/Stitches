@@ -14,3 +14,11 @@
   * 文件保护
   * USB设备管控（待测试...）
 * ...
+
+
+### 参考项目
+> https://github.com/ComodoSecurity/openedr   
+> https://github.com/virtio-win/kvm-guest-drivers-windows
+
+### 感谢
+感谢好友 jacky(https://github.com/lzty)
