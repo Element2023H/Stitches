@@ -174,6 +174,58 @@ CStitchesApi::DelProtectFile(CONST std::wstring& ProcessPath)
 	return TRUE;
 }
 
+BOOLEAN 
+STITCHESAPI_CC 
+CStitchesApi::AddProtectRegistry(CONST std::wstring& RegistryPath)
+{
+	DWORD	dwBytesReturned{ 0 };
+	if (INVALID_HANDLE_VALUE == g_hDevice)
+	{
+		return FALSE;
+	}
+
+	if (!DeviceIoControl(g_hDevice,
+		IOCTL_STITCHES_ADD_PROTECT_REGISTRY,
+		reinterpret_cast<LPVOID>(const_cast<PWCHAR>(RegistryPath.c_str())),
+		RegistryPath.length() * sizeof(WCHAR),
+		nullptr,
+		0,
+		&dwBytesReturned,
+		nullptr))
+	{
+		return FALSE;
+	}
+
+
+	return TRUE;
+}
+
+BOOLEAN 
+STITCHESAPI_CC 
+CStitchesApi::DelProtectRegistry(CONST std::wstring& RegistryPath)
+{
+	DWORD	dwBytesReturned{ 0 };
+	if (INVALID_HANDLE_VALUE == g_hDevice)
+	{
+		return FALSE;
+	}
+
+	if (!DeviceIoControl(g_hDevice,
+		IOCTL_STITCHES_DEL_PROTECT_REGISTRY,
+		reinterpret_cast<LPVOID>(const_cast<PWCHAR>(RegistryPath.c_str())),
+		RegistryPath.length() * sizeof(WCHAR),
+		nullptr,
+		0,
+		&dwBytesReturned,
+		nullptr))
+	{
+		return FALSE;
+	}
+
+
+	return TRUE;
+}
+
 BOOLEAN
 STITCHESAPI_CC
 CStitchesApi::SetHookDllPath(
