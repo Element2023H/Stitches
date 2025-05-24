@@ -3,7 +3,8 @@
 
 extern GlobalData* g_pGlobalData;
 
-constexpr ULONG MEM_ALLOC_TAG = 'htaP';
+constexpr ULONG MEM_ALLOC_TAG		= 'htaP';
+constexpr ULONG REGISTRY_MEM_TAG	= 'mtsR';
 
 #ifndef SYSTEM_PROCESS_NAME
 #define SYSTEM_PROCESS_NAME L"System"
@@ -11,6 +12,10 @@ constexpr ULONG MEM_ALLOC_TAG = 'htaP';
 
 #ifndef MAX_PROCESS_IMAGE_LENGTH
 #define MAX_PROCESS_IMAGE_LENGTH	520
+#endif
+
+#ifndef MAX_REGISTRY_PATH_LENGTH
+#define MAX_REGISTRY_PATH_LENGTH	(512 * sizeof(WCHAR))
 #endif
 
 WCHAR*
@@ -581,4 +586,58 @@ KTerminateProcess(IN CONST ULONG ProcessId)
 		}
 	}
 	return status;
+}
+
+BOOLEAN 
+KGetRegistryPath(
+	IN PVOID RegistryObject, 
+	IN OUT PWCHAR Buffer,
+	IN CONST ULONG BufferSize)
+{
+	if (!RegistryObject ||
+		!Buffer ||
+		!BufferSize || 
+		!MmIsAddressValid(RegistryObject))
+	{
+		return FALSE;
+	}
+
+	if (KeGetCurrentIrql() > PASSIVE_LEVEL ||
+		PsGetCurrentProcessId() <= ULongToHandle(4))
+	{
+		return FALSE;
+	}
+
+	BOOLEAN bResult{ FALSE };
+
+	ULONG nAllocSize = sizeof(UNICODE_STRING) + MAX_REGISTRY_PATH_LENGTH;
+	PUNICODE_STRING pObjectName = reinterpret_cast<PUNICODE_STRING>(ExAllocatePoolWithTag(NonPagedPoolNx, nAllocSize, REGISTRY_MEM_TAG));
+	if (pObjectName)
+	{
+		RtlZeroMemory(pObjectName, nAllocSize);
+		pObjectName->Length = MAX_REGISTRY_PATH_LENGTH;
+		pObjectName->MaximumLength = MAX_REGISTRY_PATH_LENGTH + sizeof(WCHAR);
+
+		ULONG nReturnLength = 0;
+		auto status = ObQueryNameString(RegistryObject,
+										reinterpret_cast<POBJECT_NAME_INFORMATION>(pObjectName),
+										nAllocSize, 
+										&nReturnLength);
+		if (NT_SUCCESS(status) && 
+			BufferSize > nReturnLength)
+		{
+			status = RtlStringCbCopyUnicodeString(Buffer, nReturnLength, pObjectName);
+			bResult = NT_SUCCESS(status);
+		}
+
+		ExFreePoolWithTag(pObjectName, REGISTRY_MEM_TAG);
+		pObjectName = nullptr;
+	}
+	else
+	{
+		return bResult;
+	}
+
+
+	return bResult;
 }
