@@ -226,6 +226,37 @@ DriverDispatch(
 		}
 		break;
 
+		case IOCTL_STITCHES_ADD_PROTECT_REGISTRY:
+		{
+			WCHAR wszProtectRegistry[MAX_REGISTRYPATH]{ 0 };
+			if (nInputbufferLength < sizeof(wszProtectRegistry) &&
+				pIoBuffer)
+			{
+				RtlCopyMemory(wszProtectRegistry, pIoBuffer, nInputbufferLength);
+				Irp->IoStatus.Status = CRULES_ADD_PROTECT_REGISTRY(wszProtectRegistry);
+			}
+			else
+			{
+				Irp->IoStatus.Status = STATUS_INFO_LENGTH_MISMATCH;
+			}
+		}
+		break;
+
+		case IOCTL_STITCHES_DEL_PROTECT_REGISTRY:
+		{
+			WCHAR wszProtectRegistry[MAX_REGISTRYPATH]{ 0 };
+			if (nInputbufferLength < sizeof(wszProtectRegistry) &&
+				pIoBuffer)
+			{
+				RtlCopyMemory(wszProtectRegistry, pIoBuffer, nInputbufferLength);
+				Irp->IoStatus.Status = CRULES_DEL_PROTECT_REGISTRY(wszProtectRegistry);
+			}
+			else
+			{
+				Irp->IoStatus.Status = STATUS_INFO_LENGTH_MISMATCH;
+			}
+		}
+		break;
 
 		default:
 			break;

@@ -44,3 +44,11 @@ _IRQL_requires_same_
 _IRQL_requires_(PASSIVE_LEVEL) 
 NTSTATUS 
 KTerminateProcess(IN CONST ULONG ProcessId);
+
+
+
+BOOLEAN
+KGetRegistryPath(
+	IN			PVOID	RegistryObject, 
+	IN OUT		PWCHAR	Buffer, 
+	IN CONST	ULONG	BufferSize );
