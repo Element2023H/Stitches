@@ -384,6 +384,7 @@ typedef enum  _VolumeControlFlag
 struct  GlobalData
 {
 	GlobalData();
+	~GlobalData();
 
 	PDRIVER_OBJECT							pDriverObject	= nullptr;
 	PDEVICE_OBJECT							pDeviceObject	= nullptr;

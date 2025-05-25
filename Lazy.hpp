@@ -40,9 +40,9 @@ public:
 		return reinterpret_cast<T*>(ExAllocatePoolWithTag(NonPagedPoolNx, sizeof(T), 'kxxf'));
 	}
 
-	FORCEINLINE static void Dispose(const LazyInstance* instance)
+	FORCEINLINE static void Dispose()
 	{
-		delete instance;
+		delete _Instance;
 		_Once.SetPoisoned();
 	}
 
