@@ -13,43 +13,6 @@ HANDLE g_hFile{ nullptr };
 
 GlobalData* g_pGlobalData;
 
-VOID
-InitSystemFucAddr()
-{
-	UNICODE_STRING ustrPsIsProtectedProcess{};
-	RtlInitUnicodeString(&ustrPsIsProtectedProcess, L"PsIsProtectedProcess");
-	g_pGlobalData->PsIsProtectedProcess = reinterpret_cast<PPsIsProtectedProcess>(MmGetSystemRoutineAddress(&ustrPsIsProtectedProcess));
-
-	UNICODE_STRING ustrPsIsProtectedProcessLight{};
-	RtlInitUnicodeString(&ustrPsIsProtectedProcessLight, L"PsIsProtectedProcessLight");
-	g_pGlobalData->PsIsProtectedProcessLight = reinterpret_cast<PPsIsProtectedProcessLight>(MmGetSystemRoutineAddress(&ustrPsIsProtectedProcessLight));
-
-	UNICODE_STRING ustrZwTerminateProcess{};
-	RtlInitUnicodeString(&ustrZwTerminateProcess, ZWTERMINATEPROCESS);
-	g_pGlobalData->ZwTerminateProcess = reinterpret_cast<PfnZwTerminateProcess>(MmGetSystemRoutineAddress(&ustrZwTerminateProcess));
-
-
-	UNICODE_STRING ustrPsGetProcessWow64Process;
-	RtlInitUnicodeString(&ustrPsGetProcessWow64Process, L"PsGetProcessWow64Process");
-	g_pGlobalData->PsGetProcessWow64Process = reinterpret_cast<PPsGetProcessWow64Process>(MmGetSystemRoutineAddress(&ustrPsGetProcessWow64Process));
-
-	UNICODE_STRING ustrPsSetCreateProcessNotifyRoutine;
-
-#if (NTDDI_VERSION >= NTDDI_WIN10_RS2)
-	RtlUnicodeStringInit(&ustrPsSetCreateProcessNotifyRoutine, L"PsSetCreateProcessNotifyRoutineEx2");
-
-	g_pGlobalData->pfnPsSetCreateProcessNotifyRoutineEx2 = reinterpret_cast<PfnPsSetCreateProcessNotifyRoutineEx2>(MmGetSystemRoutineAddress(&ustrPsSetCreateProcessNotifyRoutine));
-
-
-#else
-	RtlUnicodeStringInit(&ustrPsSetCreateProcessNotifyRoutine, L"PsSetCreateProcessNotifyRoutineEx");
-	g_pGlobalData->pfnPsSetCreateProcessNotifyRoutineEx = reinterpret_cast<PfnPsSetCreateProcessNotifyRoutineEx>(MmGetSystemRoutineAddress(&ustrPsSetCreateProcessNotifyRoutine));
-
-#endif
-
-}
-
-
 EXTERN_C
 {
 NTSTATUS DriverEntry(PDRIVER_OBJECT DriverObject,
@@ -82,6 +45,8 @@ DriverEntry(
 	UNREFERENCED_PARAMETER(DriverObject);
 	UNREFERENCED_PARAMETER(RegistryPath);
 	NTSTATUS status{ STATUS_SUCCESS };
+
+	DbgBreakPoint();
 
 	ExInitializeDriverRuntime(DrvRtPoolNxOptIn);
 
@@ -173,8 +138,6 @@ DriverEntry(
 		LOGERROR(STATUS_NO_MEMORY, "g_pGlobalData->InjectDllx86.Buffer alloc faid\r\n");
 	}
 
-
-	InitSystemFucAddr();
 
 	NOTIFY_INIT();
 

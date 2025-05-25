@@ -164,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApcInjector.hpp" />
+    <ClInclude Include="Api.hpp" />
     <ClInclude Include="Common\Common.h" />
     <ClInclude Include="CRules.hpp" />
     <ClInclude Include="DeviceControl.hpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="CRules.cpp" />
     <ClCompile Include="DeviceControl.cpp" />
     <ClCompile Include="FileFilter.cpp" />
+    <ClCompile Include="Imports.cpp" />
     <ClCompile Include="New.cpp" />
     <ClInclude Include="New.hpp" />
     <ClInclude Include="Notify.hpp" />
