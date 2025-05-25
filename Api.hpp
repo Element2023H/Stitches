@@ -12,6 +12,12 @@ class NtFunction
 	static_assert(_Always_false<_Fty>, "invalid generic parameter _Fty");
 };
 
+/// <summary>
+/// zero-cost wrapper for calling exported function from ntoskrnl.exe
+/// it will bugcheck if failed to get the system routine address
+/// </summary>
+/// <typeparam name="R">return value type of the target function</typeparam>
+/// <typeparam name="...Args">arguments type of the target function</typeparam>
 template <class R, class... Args>
 class NtFunction<R(*)(Args...)>
 {
@@ -80,43 +86,41 @@ private:
 	function_type m_function{ nullptr };
 };
 
-/// <summary>
-/// This class is not thread-safe, it is not recommend in real world code
-/// </summary>
-/// <typeparam name="_Fty"></typeparam>
+#include "Once.hpp"
+
 template <class _Fty> class LazyNtFunction {};
 
+/// <summary>
+/// Initialize a system routine when it is first called
+/// </summary>
+/// <typeparam name="_Fty">function prototype</typeparam>
 template <class R, class... Args>
 class LazyNtFunction<R(*)(Args...)> 
 	: public NtFunction<R(*)(Args...)>
 {
 public:
-	using NtFunction::Force;
-
 	LazyNtFunction(const WCHAR* Name) : m_name(Name) {}
 
-	FORCEINLINE
-	R operator () (Args... args) const
+	inline R operator () (Args... args) const
 	{
-		if (!this->Empty())
-		{
+		// call Init() only once and wait until it completed
+		m_once.CallOnceAndWait([this]() {
 			this->Init(m_name);
-		}
+			});
 
 		return this->call(args...);
 	}
-
-	FORCEINLINE
-	R operator () (Args... args)
+	
+	inline R operator () (Args... args)
 	{
-		if (!this->Empty())
-		{
+		m_once.CallOnceAndWait([this]() {
 			this->Init(m_name);
-		}
+			});
 
 		return this->call(args...);
 	}
 
 private:
+	Once m_once;
 	const WCHAR* m_name{nullptr};
 };

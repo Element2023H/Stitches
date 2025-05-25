@@ -90,6 +90,9 @@
     <ClInclude Include="RegistryProtector.hpp">
       <Filter>Protector</Filter>
     </ClInclude>
+    <ClInclude Include="Once.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApcInjector.cpp">
