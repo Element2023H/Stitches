@@ -18,3 +18,17 @@ GlobalData::GlobalData()
 	pfnPsSetCreateProcessNotifyRoutineEx.Init(L"PsSetCreateProcessNotifyRoutineEx");
 #endif
 }
+
+GlobalData::~GlobalData()
+{
+	if (InjectDllx64.Buffer)
+	{
+		ExFreePool(InjectDllx64.Buffer);
+		InjectDllx64.Buffer = nullptr;
+	}
+	if (InjectDllx86.Buffer)
+	{
+		ExFreePool(InjectDllx86.Buffer);
+		InjectDllx86.Buffer = nullptr;
+	}
+}

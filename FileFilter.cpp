@@ -27,8 +27,7 @@ UnloadFilter(IN FLT_FILTER_UNLOAD_FLAGS Flags)
 	NOTIFY_DESTROY();
 	delete NOTIFY();
 
-	REGISTRY_PROTECTOR_DESTROY();
-	delete REGISTRY_PROTECTOR();
+	LazyInstance<RegistryProtectorEx>::Dispose();
 
 	PROCESS_PROTECTOR_DESTROY();
 	delete PROCESS_PROTECTOR();
@@ -56,24 +55,7 @@ UnloadFilter(IN FLT_FILTER_UNLOAD_FLAGS Flags)
 		g_hFile = nullptr;
 	}
 
-	if (g_pGlobalData)
-	{
-
-		if (g_pGlobalData->InjectDllx64.Buffer)
-		{
-			ExFreePoolWithTag(g_pGlobalData->InjectDllx64.Buffer, GLOBALDATA_TAG);
-			g_pGlobalData->InjectDllx64.Buffer = nullptr;
-		}
-		if (g_pGlobalData->InjectDllx86.Buffer)
-		{
-			ExFreePoolWithTag(g_pGlobalData->InjectDllx86.Buffer, GLOBALDATA_TAG);
-			g_pGlobalData->InjectDllx86.Buffer = nullptr;
-		}
-
-
-		LazyInstance<GlobalData>::Dispose(&g_pGlobalData);
-	}
-
+	LazyInstance<GlobalData>::Dispose();
 
 	return STATUS_SUCCESS;
 }

@@ -33,7 +33,7 @@ public:
 	FORCEINLINE
 	void SetPoisoned()
 	{
-		_InterlockedExchange(reinterpret_cast<volatile long*>(this->m_state), state::Poisoned);
+		_InterlockedExchange(reinterpret_cast<volatile long*>(&this->m_state), state::Poisoned);
 	}
 
 	FORCEINLINE

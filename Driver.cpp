@@ -78,7 +78,7 @@ DriverEntry(
 	status = DEVICE_CTL_INITIALIZED(&ustrDeviceName, &ustrSymbolicLink);
 	if (!NT_SUCCESS(status))
 	{
-		LazyInstance<GlobalData>::Dispose(&g_pGlobalData);
+		LazyInstance<GlobalData>::Dispose();
 		return status;
 	}
 
@@ -99,7 +99,7 @@ DriverEntry(
 		DbgPrint("status = %08X\r\n", status);
 		if (g_pGlobalData)
 		{
-			LazyInstance<GlobalData>::Dispose(&g_pGlobalData);
+			LazyInstance<GlobalData>::Dispose();
 		}
 
 		return status;
