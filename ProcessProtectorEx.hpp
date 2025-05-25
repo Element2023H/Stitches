@@ -1,17 +1,17 @@
 #pragma once
 #include "Imports.hpp"
-#include "Singleton.hpp"
+#include "Lazy.hpp"
 
 
-class ProcessProtector : public Singleton<ProcessProtector>
+class ProcessProtectorEx
 {
 public:
-	NTSTATUS
-	InitializeObRegisterCallbacks();
+	ProcessProtectorEx();
+	~ProcessProtectorEx();
 
-	VOID
-	FinalizeObRegisterCallbacks();
+	NTSTATUS Init();
 
+protected:
 	static
 	OB_PREOP_CALLBACK_STATUS
 		ProcessPreOperationCallback(
@@ -31,7 +31,9 @@ private:
 	BOOLEAN		m_bObjectRegisterCreated{ FALSE };
 };
 
+static LazyInstance<ProcessProtectorEx> ProcessProtector;
+
 // Syntax sugar
-#define PROCESS_PROTECTOR()			(ProcessProtector::getInstance())
-#define PROCESS_PROTECTOR_INIT()	(ProcessProtector::getInstance()->InitializeObRegisterCallbacks())
-#define PROCESS_PROTECTOR_DESTROY() (ProcessProtector::getInstance()->FinalizeObRegisterCallbacks())
+//#define PROCESS_PROTECTOR()			(ProcessProtector::getInstance())
+//#define PROCESS_PROTECTOR_INIT()	(ProcessProtector::getInstance()->InitializeObRegisterCallbacks())
+//#define PROCESS_PROTECTOR_DESTROY() (ProcessProtector::getInstance()->FinalizeObRegisterCallbacks())

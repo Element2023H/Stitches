@@ -1,7 +1,7 @@
 #include "ApcInjector.hpp"
 #include "Utils.hpp"
 #include "Notify.hpp"
-#include "ProcessProtector.hpp"
+#include "ProcessProtectorEx.hpp"
 #include "FileFilter.hpp"
 #include "DeviceControl.hpp"
 #include "Common.h"
@@ -47,7 +47,7 @@ DriverEntry(
 	UNREFERENCED_PARAMETER(RegistryPath);
 	NTSTATUS status{ STATUS_SUCCESS };
 
-	DbgBreakPoint();
+	//DbgBreakPoint();
 
 	ExInitializeDriverRuntime(DrvRtPoolNxOptIn);
 
@@ -148,7 +148,7 @@ DriverEntry(
 
 	NOTIFY_INIT();
 
-	PROCESS_PROTECTOR_INIT();
+	ProcessProtector->Init();
 
 	RegProtector->Init();
 

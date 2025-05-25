@@ -185,7 +185,7 @@
     <ClInclude Include="Notify.hpp" />
     <ClInclude Include="Once.hpp" />
     <ClInclude Include="ProcessCtx.hpp" />
-    <ClInclude Include="ProcessProtector.hpp" />
+    <ClInclude Include="ProcessProtectorEx.hpp" />
     <ClInclude Include="RegistryProtector.hpp" />
     <ClInclude Include="Singleton.hpp" />
     <ClInclude Include="Utils.hpp" />
@@ -196,7 +196,7 @@
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="Notify.cpp" />
     <ClCompile Include="ProcessCtx.cpp" />
-    <ClCompile Include="ProcessProtector.cpp" />
+    <ClCompile Include="ProcessProtectorEx.cpp" />
     <ClCompile Include="RegistryProtector.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿#include "ProcessProtector.hpp"
+﻿#include "ProcessProtectorEx.hpp"
 #include "Utils.hpp"
 #include "Log.hpp"
 #include "CRules.hpp"
@@ -24,8 +24,74 @@ extern LazyInstance<GlobalData> g_pGlobalData;
 
 
 
+ProcessProtectorEx::ProcessProtectorEx()
+{
+
+}
+
+ProcessProtectorEx::~ProcessProtectorEx()
+{
+	if (!m_bObjectRegisterCreated)
+	{
+		return;
+	}
+
+	if (m_hObRegisterCallbacks)
+	{
+		ObUnRegisterCallbacks(m_hObRegisterCallbacks);
+		m_hObRegisterCallbacks = nullptr;
+	}
+
+	m_bObjectRegisterCreated = FALSE;
+}
+
+NTSTATUS ProcessProtectorEx::Init()
+{
+	NTSTATUS status{ STATUS_UNSUCCESSFUL };
+
+	OB_OPERATION_REGISTRATION stObOpReg[2] = {};
+	OB_CALLBACK_REGISTRATION stObCbReg = {};
+
+	USHORT OperationRegistrationCount = 0;
+
+	do
+	{
+		if (m_bObjectRegisterCreated)
+		{
+			status = STATUS_SUCCESS;
+			break;
+		}
+
+		// Processes callbacks
+		stObOpReg[OperationRegistrationCount].ObjectType = PsProcessType;
+		stObOpReg[OperationRegistrationCount].Operations = OB_OPERATION_HANDLE_CREATE | OB_OPERATION_HANDLE_DUPLICATE;
+		stObOpReg[OperationRegistrationCount].PreOperation = ProcessPreOperationCallback;	// 
+		OperationRegistrationCount += 1;
+
+		stObOpReg[OperationRegistrationCount].ObjectType = PsThreadType;
+		stObOpReg[OperationRegistrationCount].Operations = OB_OPERATION_HANDLE_CREATE | OB_OPERATION_HANDLE_DUPLICATE;
+		stObOpReg[OperationRegistrationCount].PreOperation = ThreadPreOperationCallback;
+
+		stObCbReg.Version = OB_FLT_REGISTRATION_VERSION;
+		stObCbReg.OperationRegistrationCount = OperationRegistrationCount;
+		stObCbReg.OperationRegistration = stObOpReg;
+		RtlInitUnicodeString(&stObCbReg.Altitude, L"1000");
+
+		status = ObRegisterCallbacks(&stObCbReg, &m_hObRegisterCallbacks);
+		if (NT_SUCCESS(status))
+		{
+			m_bObjectRegisterCreated = TRUE;
+			LOGINFO("bObjectRegisterCreated create success\r\n");
+		}
+
+	} while (FALSE);
+
+
+	return status;
+}
+
 OB_PREOP_CALLBACK_STATUS
-ProcessProtector::ProcessPreOperationCallback(
+ProcessProtectorEx::ProcessPreOperationCallback(
 	PVOID RegistrationContext,
 	POB_PRE_OPERATION_INFORMATION OperationInformation
 )
@@ -178,7 +244,7 @@ ProcessProtector::ProcessPreOperationCallback(
 
 
 OB_PREOP_CALLBACK_STATUS
-ProcessProtector::ThreadPreOperationCallback(
+ProcessProtectorEx::ThreadPreOperationCallback(
 	PVOID RegistrationContext,
 	POB_PRE_OPERATION_INFORMATION OperationInformation
 )
@@ -272,66 +338,3 @@ ProcessProtector::ThreadPreOperationCallback(
 }
 
 
-
-NTSTATUS 
-ProcessProtector::InitializeObRegisterCallbacks()
-{
-	NTSTATUS status{ STATUS_UNSUCCESSFUL };
-
-	OB_OPERATION_REGISTRATION stObOpReg[2] = {};
-	OB_CALLBACK_REGISTRATION stObCbReg = {};
-
-	USHORT OperationRegistrationCount = 0;
-
-	do
-	{
-		if (m_bObjectRegisterCreated)
-		{
-			status = STATUS_SUCCESS;
-			break;
-		}
-
-		// Processes callbacks
-		stObOpReg[OperationRegistrationCount].ObjectType = PsProcessType;
-		stObOpReg[OperationRegistrationCount].Operations = OB_OPERATION_HANDLE_CREATE | OB_OPERATION_HANDLE_DUPLICATE;
-		stObOpReg[OperationRegistrationCount].PreOperation = ProcessPreOperationCallback;	// 
-		OperationRegistrationCount += 1;
-
-		stObOpReg[OperationRegistrationCount].ObjectType = PsThreadType;
-		stObOpReg[OperationRegistrationCount].Operations = OB_OPERATION_HANDLE_CREATE | OB_OPERATION_HANDLE_DUPLICATE;
-		stObOpReg[OperationRegistrationCount].PreOperation = ThreadPreOperationCallback;
-
-		stObCbReg.Version = OB_FLT_REGISTRATION_VERSION;
-		stObCbReg.OperationRegistrationCount = OperationRegistrationCount;
-		stObCbReg.OperationRegistration = stObOpReg;
-		RtlInitUnicodeString(&stObCbReg.Altitude, L"1000");
-
-		status = ObRegisterCallbacks(&stObCbReg, &m_hObRegisterCallbacks);
-		if (NT_SUCCESS(status))
-		{
-			m_bObjectRegisterCreated = TRUE;
-			LOGINFO("bObjectRegisterCreated create success\r\n");
-		}
-
-	} while (FALSE);
-
-
-	return status;
-}
-
-VOID 
-ProcessProtector::FinalizeObRegisterCallbacks()
-{
-	if (!m_bObjectRegisterCreated)
-	{
-		return;
-	}
-
-	if (m_hObRegisterCallbacks)
-	{
-		ObUnRegisterCallbacks(m_hObRegisterCallbacks);
-		m_hObRegisterCallbacks = nullptr;
-	}
-
-	m_bObjectRegisterCreated = FALSE;
-}
