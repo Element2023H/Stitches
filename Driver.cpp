@@ -6,6 +6,7 @@
 #include "DeviceControl.hpp"
 #include "Common.h"
 #include "CRules.hpp"
+#include "RegistryProtector.hpp"
 
 
 
@@ -59,7 +60,6 @@ DriverEntry(
 	//RtlZeroMemory(g_pGlobalData, sizeof(GlobalData));
 
 	g_pGlobalData->pDriverObject = DriverObject;
-
 
 	UNICODE_STRING ustrDeviceName{};
 	RtlInitUnicodeString(&ustrDeviceName, DEVICE_NAME);
@@ -142,6 +142,11 @@ DriverEntry(
 	NOTIFY_INIT();
 
 	PROCESS_PROTECTOR_INIT();
+
+	REGISTRY_PROTECTOR_INIT();
+	CRULES_ADD_PROTECT_REGISTRY(RegistryPath->Buffer);
+	CRULES_ADD_PROTECT_REGISTRY(L"\\REGISTRY\\MACHINE\\SYSTEM\\ControlSet001\\Services\\Stitches\\Instances\\AltitudeAndFlags");
+	CRULES_ADD_PROTECT_REGISTRY(L"\\REGISTRY\\MACHINE\\SYSTEM\\ControlSet001\\Services\\Stitches\\Instances");
 
 	status = FILEFILTER_INIT();
 	if (NT_SUCCESS(status))

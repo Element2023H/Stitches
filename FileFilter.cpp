@@ -9,6 +9,7 @@
 #include "Common.h"
 #include "CRules.hpp"
 #include "Utils.hpp"
+#include "RegistryProtector.hpp"
 
 extern GlobalData* g_pGlobalData;
 extern HANDLE g_hFile;
@@ -24,6 +25,9 @@ UnloadFilter(IN FLT_FILTER_UNLOAD_FLAGS Flags)
 
 	NOTIFY_DESTROY();
 	delete NOTIFY();
+
+	REGISTRY_PROTECTOR_DESTROY();
+	delete REGISTRY_PROTECTOR();
 
 	PROCESS_PROTECTOR_DESTROY();
 	delete PROCESS_PROTECTOR();

@@ -64,6 +64,9 @@ extern "C"
 		BOOLEAN STITCHESAPI_CC DelProtectProcess(CONST std::wstring& ProcessPath);
 		BOOLEAN STITCHESAPI_CC AddProtectFile(CONST std::wstring& ProcessPath);
 		BOOLEAN STITCHESAPI_CC DelProtectFile(CONST std::wstring& ProcessPath);
+		BOOLEAN STITCHESAPI_CC AddProtectRegistry(CONST std::wstring& RegistryPath);
+		BOOLEAN STITCHESAPI_CC DelProtectRegistry(CONST std::wstring& RegistryPath);
+
 
 		BOOLEAN STITCHESAPI_CC SetHookDllPath(CONST std::wstring& x64dll, CONST std::wstring& x86dll);
 

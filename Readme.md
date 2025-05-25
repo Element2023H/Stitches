@@ -1,4 +1,5 @@
 # Stitches(缝合怪)
+中文 | [EN](./README_EN.md)
 
 这个项目是集成了之前的一些Windows kernel开发代码，类似一个缝合怪项目所以取名为"Stitches"
 
