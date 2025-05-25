@@ -13,6 +13,22 @@ class NtFunction
 };
 
 /// <summary>
+/// Type that to prevent compiler to generate too many duplicate code
+struct GetFunction
+{
+	PVOID operator()(const WCHAR* Name)
+	{
+		UNICODE_STRING FuncName;
+
+		RtlInitUnicodeString(&FuncName, Name);
+
+		auto FuncPtr = MmGetSystemRoutineAddress(&FuncName);
+
+		return FuncPtr;
+	}
+};
+
+/// <summary>
 /// zero-cost wrapper for calling exported function from ntoskrnl.exe
 /// it will bugcheck if failed to get the system routine address
 /// </summary>
@@ -23,26 +39,16 @@ class NtFunction<R(*)(Args...)>
 {
 	using function_type = R(NTAPI*)(Args...);
 public:
+	FORCEINLINE
 	static NtFunction Force(const WCHAR* Name)
 	{
-		UNICODE_STRING FuncName;
-
-		RtlInitUnicodeString(&FuncName, Name);
-
-		auto FuncPtr = MmGetSystemRoutineAddress(&FuncName);
-
-		return NtFunction{ reinterpret_cast<function_type>(FuncPtr) };
+		return NtFunction{ reinterpret_cast<function_type>(GetFunction{}(Name)) };
 	}
 
+	FORCEINLINE
 	void Init(const WCHAR* Name)
 	{
-		UNICODE_STRING FuncName;
-
-		RtlInitUnicodeString(&FuncName, Name);
-
-		auto FuncPtr = MmGetSystemRoutineAddress(&FuncName);
-
-		this->m_function = reinterpret_cast<function_type>(FuncPtr);
+		this->m_function = reinterpret_cast<function_type>(GetFunction{}(Name));
 	}
 
 	FORCEINLINE
