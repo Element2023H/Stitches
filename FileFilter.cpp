@@ -4,7 +4,7 @@
 #include "New.hpp"
 #include "Notify.hpp"
 #include "ProcessCtx.hpp"
-#include "ProcessProtector.hpp"
+#include "ProcessProtectorEx.hpp"
 #include "DeviceControl.hpp"
 #include "Common.h"
 #include "CRules.hpp"
@@ -29,8 +29,7 @@ UnloadFilter(IN FLT_FILTER_UNLOAD_FLAGS Flags)
 
 	LazyInstance<RegistryProtectorEx>::Dispose();
 
-	PROCESS_PROTECTOR_DESTROY();
-	delete PROCESS_PROTECTOR();
+	LazyInstance<ProcessProtectorEx>::Dispose();
 
 	FILEFILTER_DESTROY();
 	delete FILEFILTER();

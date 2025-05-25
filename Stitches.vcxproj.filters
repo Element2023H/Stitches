@@ -54,7 +54,7 @@
     <ClInclude Include="Notify.hpp">
       <Filter>Monitor</Filter>
     </ClInclude>
-    <ClInclude Include="ProcessProtector.hpp">
+    <ClInclude Include="ProcessProtectorEx.hpp">
       <Filter>Protector</Filter>
     </ClInclude>
     <ClInclude Include="GenericTable.hpp">
@@ -113,7 +113,7 @@
     <ClCompile Include="Notify.cpp">
       <Filter>Monitor</Filter>
     </ClCompile>
-    <ClCompile Include="ProcessProtector.cpp">
+    <ClCompile Include="ProcessProtectorEx.cpp">
       <Filter>Protector</Filter>
     </ClCompile>
     <ClCompile Include="New.cpp">
@@ -131,11 +131,11 @@
     <ClCompile Include="CRules.cpp">
       <Filter>Rules</Filter>
     </ClCompile>
-    <ClCompile Include="Imports.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="RegistryProtector.cpp">
       <Filter>Protector</Filter>
+    </ClCompile>
+    <ClCompile Include="Imports.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

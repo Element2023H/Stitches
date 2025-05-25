@@ -1,6 +1,9 @@
 #pragma once
 #include "Once.hpp"
 
+
+const ULONG LAZY_INSTANCE_MEM = 'mmyL';
+
 /// <summary>
 /// A Lazy instance model for static singleton types, it initialize T when it is first accessed
 /// </summary>
@@ -35,11 +38,6 @@ public:
 			});
 	}
 
-	FORCEINLINE T* ForceDefault()
-	{
-		return reinterpret_cast<T*>(ExAllocatePoolWithTag(NonPagedPoolNx, sizeof(T), 'kxxf'));
-	}
-
 	FORCEINLINE static void Dispose()
 	{
 		delete _Instance;
@@ -71,6 +69,12 @@ public:
 			});
 
 		return _Instance;
+	}
+
+private:
+	FORCEINLINE T* ForceDefault()
+	{
+		return reinterpret_cast<T*>(ExAllocatePoolWithTag(NonPagedPoolNx, sizeof(T), LAZY_INSTANCE_MEM));
 	}
 };
 
