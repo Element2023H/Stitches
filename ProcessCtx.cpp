@@ -4,8 +4,9 @@
 #include "Log.hpp"
 #include "CRules.hpp"
 #include "Locks.hpp"
+#include "Lazy.hpp"
 
-extern GlobalData* g_pGlobalData;
+extern LazyInstance<GlobalData> g_pGlobalData;
 
 VOID ProcessCtx::Initialization()
 {

@@ -3,8 +3,9 @@
 #include "Imports.hpp"
 #include "CRules.hpp"
 #include "Log.hpp"
+#include "Lazy.hpp"
 
-extern GlobalData* g_pGlobalData;
+extern LazyInstance<GlobalData> g_pGlobalData;
 
 #ifndef IS_MY_CONTROL_DEVICE_OBJECT
 #define IS_MY_CONTROL_DEVICE_OBJECT(p) ((p) == g_pGlobalData->pDeviceObject)

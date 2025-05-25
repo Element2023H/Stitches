@@ -6,13 +6,12 @@
 #include "DeviceControl.hpp"
 #include "Common.h"
 #include "CRules.hpp"
+#include "Lazy.hpp"
 #include "RegistryProtector.hpp"
-
-
 
 HANDLE g_hFile{ nullptr };
 
-GlobalData* g_pGlobalData;
+LazyInstance<GlobalData> g_pGlobalData;
 
 EXTERN_C
 {
@@ -38,6 +37,7 @@ DriverUnload(PDRIVER_OBJECT DriverObject)
 	UNREFERENCED_PARAMETER(DriverObject);
 }
 
+
 NTSTATUS
 DriverEntry(
 	PDRIVER_OBJECT DriverObject,
@@ -51,15 +51,23 @@ DriverEntry(
 
 	ExInitializeDriverRuntime(DrvRtPoolNxOptIn);
 
-	g_pGlobalData = new(NonPagedPoolNx) GlobalData;
+	// initialize g_pGlobalData
+	LazyInstance<GlobalData>::Force([DriverObject]() {
+		auto data = new(NonPagedPoolNx) GlobalData{};
+
+		if (!data)
+			return (GlobalData*)nullptr;
+
+		// set driver object
+		data->pDriverObject = DriverObject;
+		return data;
+		});
+
 	if (!g_pGlobalData)
 	{
 		DbgPrint("g_pGlobalData alloc failed\r\n");
 		return STATUS_NO_MEMORY;
 	}
-	//RtlZeroMemory(g_pGlobalData, sizeof(GlobalData));
-
-	g_pGlobalData->pDriverObject = DriverObject;
 
 	UNICODE_STRING ustrDeviceName{};
 	RtlInitUnicodeString(&ustrDeviceName, DEVICE_NAME);
@@ -70,7 +78,7 @@ DriverEntry(
 	status = DEVICE_CTL_INITIALIZED(&ustrDeviceName, &ustrSymbolicLink);
 	if (!NT_SUCCESS(status))
 	{
-		delete g_pGlobalData;
+		LazyInstance<GlobalData>::Dispose(&g_pGlobalData);
 		return status;
 	}
 
@@ -91,8 +99,7 @@ DriverEntry(
 		DbgPrint("status = %08X\r\n", status);
 		if (g_pGlobalData)
 		{
-			delete g_pGlobalData;
-			g_pGlobalData = nullptr;
+			LazyInstance<GlobalData>::Dispose(&g_pGlobalData);
 		}
 
 		return status;
@@ -143,10 +150,13 @@ DriverEntry(
 
 	PROCESS_PROTECTOR_INIT();
 
-	REGISTRY_PROTECTOR_INIT();
+	RegProtector->Init();
+
+	//REGISTRY_PROTECTOR_INIT();
 	CRULES_ADD_PROTECT_REGISTRY(RegistryPath->Buffer);
 	CRULES_ADD_PROTECT_REGISTRY(L"\\REGISTRY\\MACHINE\\SYSTEM\\ControlSet001\\Services\\Stitches\\Instances\\AltitudeAndFlags");
 	CRULES_ADD_PROTECT_REGISTRY(L"\\REGISTRY\\MACHINE\\SYSTEM\\ControlSet001\\Services\\Stitches\\Instances");
+
 
 	status = FILEFILTER_INIT();
 	if (NT_SUCCESS(status))

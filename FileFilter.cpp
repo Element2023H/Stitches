@@ -9,9 +9,10 @@
 #include "Common.h"
 #include "CRules.hpp"
 #include "Utils.hpp"
+#include "Lazy.hpp"
 #include "RegistryProtector.hpp"
 
-extern GlobalData* g_pGlobalData;
+extern LazyInstance<GlobalData> g_pGlobalData;
 extern HANDLE g_hFile;
 
 static
@@ -70,8 +71,7 @@ UnloadFilter(IN FLT_FILTER_UNLOAD_FLAGS Flags)
 		}
 
 
-		delete g_pGlobalData;
-		g_pGlobalData = nullptr;
+		LazyInstance<GlobalData>::Dispose(&g_pGlobalData);
 	}
 
 

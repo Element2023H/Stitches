@@ -2,8 +2,9 @@
 #include "ProcessCtx.hpp"
 #include "ApcInjector.hpp"
 #include "Log.hpp"
+#include "Lazy.hpp"
 
-extern GlobalData* g_pGlobalData;
+extern LazyInstance<GlobalData> g_pGlobalData;
 
 NTSTATUS 
 ThreadNotify::InitializeThreadNotify()

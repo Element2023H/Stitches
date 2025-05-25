@@ -1,7 +1,8 @@
 ﻿#include "Utils.hpp"
+#include "Lazy.hpp"
 
-
-extern GlobalData* g_pGlobalData;
+//extern GlobalData* g_pGlobalData;
+extern LazyInstance<GlobalData> g_pGlobalData;
 
 constexpr ULONG MEM_ALLOC_TAG		= 'htaP';
 constexpr ULONG REGISTRY_MEM_TAG	= 'mtsR';

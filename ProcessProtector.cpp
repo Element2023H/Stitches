@@ -2,9 +2,10 @@
 #include "Utils.hpp"
 #include "Log.hpp"
 #include "CRules.hpp"
+#include "Lazy.hpp"
 #include "ProcessCtx.hpp"
 
-extern GlobalData* g_pGlobalData;
+extern LazyInstance<GlobalData> g_pGlobalData;
 
 #define PROCESS_TERMINATE                  (0x0001)  
 #define PROCESS_CREATE_THREAD              (0x0002)  

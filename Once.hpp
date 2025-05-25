@@ -31,6 +31,12 @@ public:
 	ULONG GetState() const { return this->m_state; }
 
 	FORCEINLINE
+	void SetPoisoned()
+	{
+		_InterlockedExchange(reinterpret_cast<volatile long*>(this->m_state), state::Poisoned);
+	}
+
+	FORCEINLINE
 	void ForceWait() const
 	{
 		while (this->m_state != state::Completed)
