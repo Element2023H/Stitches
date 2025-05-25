@@ -182,6 +182,7 @@
     <ClCompile Include="New.cpp" />
     <ClInclude Include="New.hpp" />
     <ClInclude Include="Notify.hpp" />
+    <ClInclude Include="Once.hpp" />
     <ClInclude Include="ProcessCtx.hpp" />
     <ClInclude Include="ProcessProtector.hpp" />
     <ClInclude Include="RegistryProtector.hpp" />
