@@ -10,7 +10,7 @@
 #include <ntstrsafe.h>
 #include <ntddk.h>
 #include "Locks.hpp"
-
+#include "Api.hpp"
 
 #ifndef MAX_PATH
 #define MAX_PATH (260)
@@ -383,17 +383,16 @@ typedef enum  _VolumeControlFlag
 
 struct  GlobalData
 {
-	GlobalData() = default;
+	GlobalData();
 
 	PDRIVER_OBJECT							pDriverObject	= nullptr;
 	PDEVICE_OBJECT							pDeviceObject	= nullptr;
 	PFLT_FILTER								pFileFilter		= nullptr;
 
-	PZwQueryInformationProcess				fnZwQueryInformationProcess			= nullptr;
-	PZwQuerySystemInformation				fnZwQuerySystemInformation			= nullptr;
-	PCmCallbackGetKeyObjectIDEx				fnCmCallbackGetKeyObjectIDEx		= nullptr;
-	PCmCallbackReleaseKeyObjectIDEx			fnCmCallbackReleaseKeyObjectIDEx	= nullptr;
-
+	NtFunction<PZwQueryInformationProcess> fnZwQueryInformationProcess;
+	NtFunction<PZwQuerySystemInformation> fnZwQuerySystemInformation;
+	NtFunction<PCmCallbackGetKeyObjectIDEx> fnCmCallbackGetKeyObjectIDEx;
+	NtFunction<PCmCallbackReleaseKeyObjectIDEx> fnCmCallbackReleaseKeyObjectIDEx;
 
 	// Notify
 	BOOLEAN									bNoptifyIntialized {FALSE};
@@ -402,9 +401,9 @@ struct  GlobalData
 	//
 	// process Notify
 	//
-	PfnPsSetCreateProcessNotifyRoutineEx	pfnPsSetCreateProcessNotifyRoutineEx	= nullptr;
+	NtFunction<PfnPsSetCreateProcessNotifyRoutineEx> pfnPsSetCreateProcessNotifyRoutineEx;
 #if (NTDDI_VERSION >= NTDDI_WIN10_RS2)
-	PfnPsSetCreateProcessNotifyRoutineEx2	pfnPsSetCreateProcessNotifyRoutineEx2	= nullptr;
+	NtFunction<PfnPsSetCreateProcessNotifyRoutineEx> pfnPsSetCreateProcessNotifyRoutineEx2;
 #endif
 	NPAGED_LOOKASIDE_LIST					ProcessCtxNPList;
 	LIST_ENTRY								ProcessCtxList;
@@ -418,16 +417,16 @@ struct  GlobalData
 	//
 	// Signing verification API
 	//
-	PPsIsProtectedProcess					PsIsProtectedProcess		= nullptr;
-	PPsIsProtectedProcessLight				PsIsProtectedProcessLight	= nullptr;
-	PPsGetProcessSignatureLevel				PsGetProcessSignatureLevel	= nullptr;
-	PSeGetCachedSigningLevel				SeGetCachedSigningLevel		= nullptr;
-	PNtSetCachedSigningLevel				NtSetCachedSigningLevel		= nullptr;
-	PPsGetProcessWow64Process				PsGetProcessWow64Process	= nullptr;
-	PPsWrapApcWow64Thread					PsWrapApcWow64Thread		= nullptr;
+	NtFunction<PPsIsProtectedProcess>					PsIsProtectedProcess;
+	NtFunction<PPsIsProtectedProcessLight>				PsIsProtectedProcessLight;
+	NtFunction<PPsGetProcessSignatureLevel>				PsGetProcessSignatureLevel;
+	NtFunction<PSeGetCachedSigningLevel>				SeGetCachedSigningLevel;
+	NtFunction<PNtSetCachedSigningLevel>				NtSetCachedSigningLevel;
+	NtFunction<PPsGetProcessWow64Process>				PsGetProcessWow64Process;
+	NtFunction<PPsWrapApcWow64Thread>					PsWrapApcWow64Thread;
 
 	
-	PfnZwTerminateProcess					ZwTerminateProcess			= nullptr;
+	NtFunction<PfnZwTerminateProcess>					ZwTerminateProcess;
 
 
 	volatile VolumeControlFlag				volumeControlFlag;

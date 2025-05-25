@@ -84,6 +84,8 @@
     <ClInclude Include="Locks.hpp">
       <Filter>KernelStl</Filter>
     </ClInclude>
+    <ClInclude Include="Api.hpp">
+      <Filter>Header Files</Filter>
     <ClInclude Include="RegistryProtector.hpp">
       <Filter>Protector</Filter>
     </ClInclude>
@@ -122,6 +124,8 @@
     <ClCompile Include="CRules.cpp">
       <Filter>Rules</Filter>
     </ClCompile>
+    <ClCompile Include="Imports.cpp">
+      <Filter>Source Files</Filter>
     <ClCompile Include="RegistryProtector.cpp">
       <Filter>Protector</Filter>
     </ClCompile>

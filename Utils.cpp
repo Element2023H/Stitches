@@ -551,15 +551,12 @@ KTerminateProcess(IN CONST ULONG ProcessId)
 		RtlInitUnicodeString(&ustrZwTerminateProcess, ZWTERMINATEPROCESS);
 
 		// 再次获取下地址
-		g_pGlobalData->ZwTerminateProcess = reinterpret_cast<PfnZwTerminateProcess>(
-			MmGetSystemRoutineAddress(&ustrZwTerminateProcess));
+		g_pGlobalData->ZwTerminateProcess.Init(L"ZwTerminateProcess");
 		if (!g_pGlobalData->ZwTerminateProcess)
 		{
 			return STATUS_UNSUCCESSFUL;
 		}
 	}
-
-
 
 	__try
 	{
