@@ -86,6 +86,7 @@
     </ClInclude>
     <ClInclude Include="Api.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="RegistryProtector.hpp">
       <Filter>Protector</Filter>
     </ClInclude>
@@ -126,6 +127,7 @@
     </ClCompile>
     <ClCompile Include="Imports.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="RegistryProtector.cpp">
       <Filter>Protector</Filter>
     </ClCompile>
