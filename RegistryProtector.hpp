@@ -19,7 +19,7 @@ protected:
 
 public:
 	LARGE_INTEGER m_Cookie{};
-	BOOLEAN m_bSuccess{ FALSE };
+	BOOLEAN m_bInitSuccess{ FALSE };
 };
 
 static LazyInstance<RegistryProtectorEx> RegProtector;

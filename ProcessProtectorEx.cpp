@@ -26,17 +26,18 @@ extern LazyInstance<GlobalData> g_pGlobalData;
 
 ProcessProtectorEx::ProcessProtectorEx()
 {
-
+	m_hObRegisterCallbacks = nullptr;
+	m_bObjectRegisterCreated = FALSE;
 }
 
 ProcessProtectorEx::~ProcessProtectorEx()
 {
-	if (!m_bObjectRegisterCreated)
+	if (FALSE == m_bObjectRegisterCreated)
 	{
 		return;
 	}
 
-	if (m_hObRegisterCallbacks)
+	if (TRUE == m_bObjectRegisterCreated)
 	{
 		ObUnRegisterCallbacks(m_hObRegisterCallbacks);
 		m_hObRegisterCallbacks = nullptr;
@@ -56,7 +57,7 @@ NTSTATUS ProcessProtectorEx::Init()
 
 	do
 	{
-		if (m_bObjectRegisterCreated)
+		if (TRUE == m_bObjectRegisterCreated)
 		{
 			status = STATUS_SUCCESS;
 			break;
