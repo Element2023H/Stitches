@@ -48,12 +48,13 @@ AllowedRegistryOperation(
 
 RegistryProtectorEx::RegistryProtectorEx()
 {
-
+	m_Cookie.QuadPart = 0;
+	m_bInitSuccess = FALSE;
 }
 
 RegistryProtectorEx::~RegistryProtectorEx()
 {
-	if (!m_bSuccess)
+	if (!m_bInitSuccess)
 	{
 		return;
 	}
@@ -62,7 +63,7 @@ RegistryProtectorEx::~RegistryProtectorEx()
 	status = CmUnRegisterCallback(m_Cookie);
 	if (NT_SUCCESS(status))
 	{
-		m_bSuccess = FALSE;
+		m_bInitSuccess = FALSE;
 	}
 }
 
@@ -70,27 +71,25 @@ NTSTATUS RegistryProtectorEx::Init()
 {
 	NTSTATUS status{ STATUS_SUCCESS };
 
-	if (m_bSuccess)
+	if (TRUE == m_bInitSuccess)
 	{
 		return status;
 	}
 
-	if (0 == m_Cookie.QuadPart)
-	{
-		UNICODE_STRING usCallbackAltitude = {};
-		RtlInitUnicodeString(&usCallbackAltitude, L"38325");
+	UNICODE_STRING usCallbackAltitude = {};
+	RtlInitUnicodeString(&usCallbackAltitude, L"38325");
 
-		status = CmRegisterCallbackEx(NotifyOnRegistryActions,
-			&usCallbackAltitude,
-			g_pGlobalData->pDriverObject,
-			nullptr,
-			&m_Cookie,
-			nullptr);
-		if (NT_SUCCESS(status))
-		{
-			m_bSuccess = TRUE;
-		}
+	status = CmRegisterCallbackEx(NotifyOnRegistryActions,
+		&usCallbackAltitude,
+		g_pGlobalData->pDriverObject,
+		nullptr,
+		&m_Cookie,
+		nullptr);
+	if (NT_SUCCESS(status))
+	{
+		m_bInitSuccess = TRUE;
 	}
+	
 
 	return status;
 }
