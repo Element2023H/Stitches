@@ -1,5 +1,6 @@
 #pragma once
 #include "Once.hpp"
+#include "New.hpp"
 
 
 const ULONG LAZY_INSTANCE_MEM = 'mmyL';
@@ -74,7 +75,8 @@ public:
 private:
 	FORCEINLINE T* ForceDefault()
 	{
-		return reinterpret_cast<T*>(ExAllocatePoolWithTag(NonPagedPoolNx, sizeof(T), LAZY_INSTANCE_MEM));
+		//return reinterpret_cast<T*>(ExAllocatePoolWithTag(NonPagedPoolNx, sizeof(T), LAZY_INSTANCE_MEM));
+		return new(NonPagedPoolNx) T;
 	}
 };
 
