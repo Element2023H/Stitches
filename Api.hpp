@@ -1,19 +1,21 @@
 #pragma once
 #include <ntifs.h>
+#include "Traits.hpp"
 
-template <class...> struct Always_false { static constexpr bool value = false; };
+using namespace traits;
 
-template <class... Args>
-using _Always_false = typename Always_false<Args...>::value;
+template <class _Fty, class _GetFunctionTrait = GetFunction>
+class NtFunction;
 
-template <class _Fty>
+template <class _Fty, class _GetFunctionTrait>
 class NtFunction
 {
 	static_assert(_Always_false<_Fty>, "invalid generic parameter _Fty");
 };
 
 /// <summary>
-/// Type that to prevent compiler to generate too many duplicate code
+/// A type that define the default method to get system routine address
+/// </summary>
 struct GetFunction
 {
 	PVOID operator()(const WCHAR* Name)
@@ -29,26 +31,61 @@ struct GetFunction
 };
 
 /// <summary>
+/// A type that define the default method to get system routine address with IRQL check
+/// it will BugCheck when IRQL is not equal to PASSIVE_LEVEL since `MmGetSystemRoutineAddress` can only run on this level
+/// </summary>
+struct GetFunctionChecked
+{
+	PVOID operator()(const WCHAR* Name)
+	{
+		NT_ASSERT(KeGetCurrentIrql() == PASSIVE_LEVEL);
+
+		if (KeGetCurrentIrql() != PASSIVE_LEVEL)
+		{
+			KeBugCheck(IRQL_NOT_LESS_OR_EQUAL);
+		}
+
+		return GetFunction{}(Name);
+	}
+};
+
+/// <summary>
+/// A type that define method to get system routine address from parsing export table from ntoskrnl.exe
+/// this method is not implemented, u should implement it yourself
+/// </summary>
+struct GetFunctionPEExport
+{
+	static constexpr ULONG BUGCHECK_NOT_IMPLEMENTED = 0x800;
+
+	PVOID operator()(const WCHAR* Name)
+	{
+		UNREFERENCED_PARAMETER(Name);
+
+		KeBugCheck(BUGCHECK_NOT_IMPLEMENTED);
+	}
+};
+
+/// <summary>
 /// zero-cost wrapper for calling exported function from ntoskrnl.exe
 /// it will bugcheck if failed to get the system routine address
 /// </summary>
 /// <typeparam name="R">return value type of the target function</typeparam>
 /// <typeparam name="...Args">arguments type of the target function</typeparam>
-template <class R, class... Args>
-class NtFunction<R(*)(Args...)>
+template <class _GetFunction, class R, class... Args>
+class NtFunction<R(*)(Args...), _GetFunction>
 {
 	using function_type = R(NTAPI*)(Args...);
 public:
 	FORCEINLINE
 	static NtFunction Force(const WCHAR* Name)
 	{
-		return NtFunction{ reinterpret_cast<function_type>(GetFunction{}(Name)) };
+		return NtFunction{ reinterpret_cast<function_type>(_GetFunction{}(Name)) };
 	}
 
 	FORCEINLINE
 	void Init(const WCHAR* Name)
 	{
-		this->m_function = reinterpret_cast<function_type>(GetFunction{}(Name));
+		this->m_function = reinterpret_cast<function_type>(_GetFunction{}(Name));
 	}
 
 	FORCEINLINE
@@ -75,7 +112,6 @@ public:
 		return this->call(args...);
 	}
 
-protected:
 	FORCEINLINE
 	R call(Args... args) const
 	{
@@ -94,14 +130,18 @@ private:
 
 #include "Once.hpp"
 
-template <class _Fty> class LazyNtFunction {};
+template <class _Fty, class _GetFuncionTrait = GetFunctionChecked>
+class LazyNtFunction 
+{
+	static_assert(_Always_false<_Fty>, "invalid generic parameter _Fty");
+};
 
 /// <summary>
 /// Initialize a system routine when it is first called
 /// </summary>
 /// <typeparam name="_Fty">function prototype</typeparam>
 template <class R, class... Args>
-class LazyNtFunction<R(*)(Args...)> 
+class LazyNtFunction<R(*)(Args...)>
 	: public NtFunction<R(*)(Args...)>
 {
 public:
