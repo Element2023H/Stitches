@@ -188,6 +188,7 @@
     <ClInclude Include="ProcessProtectorEx.hpp" />
     <ClInclude Include="RegistryProtector.hpp" />
     <ClInclude Include="Singleton.hpp" />
+    <ClInclude Include="Traits.hpp" />
     <ClInclude Include="Utils.hpp" />
   </ItemGroup>
   <ItemGroup>

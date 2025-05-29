@@ -1,26 +1,11 @@
 #pragma once
 #include "Once.hpp"
 #include "New.hpp"
+#include "Traits.hpp"
+
+using namespace traits;
 
 constexpr ULONG LAZY_INSTANCE_MEM = 'mmyL';
-
-// stolen from STL
-// keep these type traits available until this project supports STL
-namespace traits {
-	template <bool _Test, class _Ty = void>
-	struct enable_if {}; // no member "type" when !_Test
-
-	template <class _Ty>
-	struct enable_if<true, _Ty> { // type is _Ty for _Test
-		using type = _Ty;
-	};
-
-	template <bool _Test, class _Ty = void>
-	using enable_if_t = typename enable_if<_Test, _Ty>::type;
-
-	template <class _Ty>
-	constexpr bool is_default_constructable_v = __is_constructible(_Ty);
-}
 
 /// <summary>
 /// A Lazy instance model for static singleton types, it initialize T when it is first accessed
