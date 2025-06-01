@@ -94,7 +94,7 @@ private:
 	FORCEINLINE T* ForceDefault()
 	{
 		_Once.CallOnceAndWait([]() {
-			return new(PoolType) T;
+			_Instance = new(PoolType) T;
 			});
 
 		return _Instance;

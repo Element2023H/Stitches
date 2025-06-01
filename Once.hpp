@@ -43,7 +43,9 @@ public:
 			_mm_pause();
 	}
 
-	template <class _Fty>
+	template <
+		class _Fty,
+		typename = traits::enable_if_t<is_call_once_compatible_v<_Fty>>>
 	inline void CallOnce(_Fty init)
 	{
 		if (state::Initial ==
@@ -57,7 +59,9 @@ public:
 		}
 	}
 
-	template <class _Fty>
+	template <
+		class _Fty,
+		typename = traits::enable_if_t<is_call_once_compatible_v<_Fty>>>
 	inline void CallOnceAndWait(_Fty init)
 	{
 		if (state::Completed == this->m_state)
