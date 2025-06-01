@@ -63,6 +63,12 @@ namespace traits {
 	template <class _Ty>
 	_INLINE_VAR constexpr bool is_default_constructable_v = __is_constructible(_Ty);
 
+	/// <summary>
+	/// NOTE
+	/// specializations of `function_type` only target on x64
+	/// and it is not the whole implementation
+	/// </summary>
+	/// <typeparam name="_Fty">target function type to test</typeparam>
 	template <class _Fty>
 	struct function_type
 	{
