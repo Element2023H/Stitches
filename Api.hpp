@@ -74,6 +74,8 @@ struct GetFunctionPEExport
 template <class _GetFunction, class R, class... Args>
 class NtFunction<R(*)(Args...), _GetFunction>
 {
+	static_assert(!traits::is_invokable_r_v<PVOID, _GetFunction>, "_GetFunction is not a valid type");
+
 	using function_type = R(NTAPI*)(Args...);
 public:
 	FORCEINLINE
