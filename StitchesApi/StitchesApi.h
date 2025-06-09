@@ -57,6 +57,22 @@ extern "C"
 	{
 	public:
 		CStitchesApi(void);
+		CStitchesApi(std::wstring ServiceName)
+		{
+			memcpy(m_wstrServiceName, ServiceName.c_str(), ServiceName.length() * sizeof(WCHAR));
+		}
+
+		BOOLEAN
+		STITCHESAPI_CC
+		InstallDriver();
+
+		BOOLEAN
+		STITCHESAPI_CC
+		UninstallDriver();
+
+		BOOLEAN
+		STITCHESAPI_CC
+		OpenDevice();
 
 		BOOLEAN STITCHESAPI_CC AddTrustProcess(CONST std::wstring& ProcessPath);
 		BOOLEAN STITCHESAPI_CC DelTrustProcess(CONST std::wstring& ProcessPath);
@@ -70,6 +86,17 @@ extern "C"
 
 		BOOLEAN STITCHESAPI_CC SetHookDllPath(CONST std::wstring& x64dll, CONST std::wstring& x86dll);
 
+	protected:
+		BOOLEAN
+		STITCHESAPI_CC
+		InstallMinifilterDriver(
+			CONST std::wstring& DriverPath,
+			CONST std::wstring& InstanceName,
+			CONST std::wstring& Altitude,
+			BOOLEAN AutoStart = TRUE);
+
+	private:
+		WCHAR m_wstrServiceName[MAX_PATH]{};
 	};
 
 
