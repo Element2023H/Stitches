@@ -165,6 +165,7 @@
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Alpc.hpp" />
     <ClInclude Include="ApcInjector.hpp" />
     <ClInclude Include="Api.hpp" />
     <ClInclude Include="Common\Common.h" />
@@ -176,6 +177,7 @@
     <ClInclude Include="Lazy.hpp" />
     <ClInclude Include="Locks.hpp" />
     <ClInclude Include="Log.hpp" />
+    <ClCompile Include="Alpc.cpp" />
     <ClCompile Include="CRules.cpp" />
     <ClCompile Include="DeviceControl.cpp" />
     <ClCompile Include="FileFilter.cpp" />
