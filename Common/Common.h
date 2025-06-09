@@ -12,6 +12,8 @@
 #define SYMBOLICLINK_NAME	L"\\DosDevices\\" KERNELDEVICE_DEVICE_NAME
 
 
+#define DRIVER_FLT_PORT_NAME L"File_Filter_Port_Name"
+
 
 
 typedef struct _HOOK_DLL_PATH

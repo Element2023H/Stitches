@@ -99,6 +99,9 @@
     <ClInclude Include="Traits.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Alpc.hpp">
+      <Filter>Communication</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApcInjector.cpp">
@@ -139,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="Imports.cpp">
       <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Alpc.cpp">
+      <Filter>Communication</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
