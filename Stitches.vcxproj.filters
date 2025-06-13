@@ -102,6 +102,12 @@
     <ClInclude Include="Alpc.hpp">
       <Filter>Communication</Filter>
     </ClInclude>
+    <ClInclude Include="EventQueue.hpp">
+      <Filter>KernelStl</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemWorker.hpp">
+      <Filter>KernelStl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApcInjector.cpp">

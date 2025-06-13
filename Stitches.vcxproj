@@ -171,6 +171,7 @@
     <ClInclude Include="Common\Common.h" />
     <ClInclude Include="CRules.hpp" />
     <ClInclude Include="DeviceControl.hpp" />
+    <ClInclude Include="EventQueue.hpp" />
     <ClInclude Include="FileFilter.hpp" />
     <ClInclude Include="GenericTable.hpp" />
     <ClInclude Include="Imports.hpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="ProcessProtectorEx.hpp" />
     <ClInclude Include="RegistryProtector.hpp" />
     <ClInclude Include="Singleton.hpp" />
+    <ClInclude Include="SystemWorker.hpp" />
     <ClInclude Include="Traits.hpp" />
     <ClInclude Include="Utils.hpp" />
   </ItemGroup>

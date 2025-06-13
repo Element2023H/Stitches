@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifdef STITCHESAPI_EXPORTS
 #include <winioctl.h>
@@ -14,6 +14,21 @@
 
 #define DRIVER_FLT_PORT_NAME L"File_Filter_Port_Name"
 
+enum class MessageType
+{
+	ProcessCreate = 1,
+	ProcessTerminate,
+	LoadImageType,
+	ThreadType,
+	FileCreate,
+};
+
+struct EventData
+{
+	MessageType	messageType;		// 消息类型
+	ULONG		uDataLength;		// 消息数据大小
+	PVOID		pDataBuffer;		// 消息数据		
+};
 
 
 typedef struct _HOOK_DLL_PATH
